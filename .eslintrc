@@ -2,11 +2,13 @@
   "root": true,
   "extends": [
     "airbnb",
-    "plugin:flowtype/recommended"
+    "plugin:flowtype/recommended",
+    "prettier"
   ],
   "plugins": [
     "react",
-    "flowtype"
+    "flowtype",
+    "prettier"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -33,6 +35,7 @@
     }
   },
   "rules": {
+    "prettier/prettier": "error",
     "import/first": 0,
     "import/no-extraneous-dependencies": 0,
     "no-use-before-define": [

@@ -16,10 +16,7 @@ const projectRoot = path.resolve(__dirname);
 module.exports = {
   mode: 'production',
   optimization: {
-    minimizer: [
-      new UglifyJsPlugin({ sourceMap: true }),
-      new OptimizeCSSAssetsPlugin({}),
-    ],
+    minimizer: [new UglifyJsPlugin({ sourceMap: true }), new OptimizeCSSAssetsPlugin({})],
   },
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json'],
@@ -169,9 +166,7 @@ module.exports = {
               autoprefixer: {
                 browsers: ['last 2 versions'],
               },
-              plugins: () => [
-                autoprefixer,
-              ],
+              plugins: () => [autoprefixer],
             },
           },
         ],

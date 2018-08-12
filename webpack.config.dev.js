@@ -19,10 +19,7 @@ module.exports = {
     ],
   },
   devtool: 'cheap-module-eval-source-map', // more info:https://webpack.js.org/guides/development/#using-source-maps and https://webpack.js.org/configuration/devtool/
-  entry: [
-    'react-hot-loader/patch',
-    path.join(projectRoot, 'src', 'index.js'),
-  ],
+  entry: ['react-hot-loader/patch', path.join(projectRoot, 'src', 'index.js')],
   target: 'web',
   output: {
     path: path.join(projectRoot, 'dist'),
@@ -43,7 +40,8 @@ module.exports = {
       filename: '[name].css',
       chunkFilename: '[id].css',
     }),
-    new HtmlWebpackPlugin({ // Create HTML file that includes references to bundled CSS and JS.
+    new HtmlWebpackPlugin({
+      // Create HTML file that includes references to bundled CSS and JS.
       template: path.join(projectRoot, 'src', 'index.html'),
       minify: {
         removeComments: true,
@@ -132,9 +130,7 @@ module.exports = {
               autoprefixer: {
                 browsers: ['last 2 versions'],
               },
-              plugins: () => [
-                autoprefixer,
-              ],
+              plugins: () => [autoprefixer],
             },
           },
         ],

@@ -7,15 +7,18 @@ describe('Utils: ApiUtils', () => {
       fetch.resetMocks();
     });
     it('should be able to return `json`', async () => {
-      fetch.mockResponseOnce(JSON.stringify({
-        foo: 'bar',
-      }), {
-        method: 'GET',
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
+      fetch.mockResponseOnce(
+        JSON.stringify({
+          foo: 'bar',
+        }),
+        {
+          method: 'GET',
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       const options: RequestOptions = {
         headers: { 'Content-Type': 'application/json' },
       };

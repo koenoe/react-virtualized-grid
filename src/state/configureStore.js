@@ -20,10 +20,7 @@ const history: BrowserHistory = createHistory();
 function configureStore(initialState?: State): Store {
   const connectedRootReducer: any = connectRouter(history)(rootReducer);
   const reactRouterMiddleware: any = routerMiddleware(history);
-  const middlewares: Array<any> = [
-    thunk,
-    reactRouterMiddleware,
-  ];
+  const middlewares: Array<any> = [thunk, reactRouterMiddleware];
   if (process.env.NODE_ENV === 'development') {
     middlewares.unshift(reduxImmutableStateInvariant());
   }
@@ -35,9 +32,12 @@ function configureStore(initialState?: State): Store {
   );
 
   if (module.hot) {
-    module.hot.accept('state/reducers', (): void => {
-      store.replaceReducer(connectedRootReducer);
-    });
+    module.hot.accept(
+      'state/reducers',
+      (): void => {
+        store.replaceReducer(connectedRootReducer);
+      },
+    );
   }
 
   return store;

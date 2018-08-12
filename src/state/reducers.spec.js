@@ -15,7 +15,6 @@ describe('Reducers', () => {
     };
     store.dispatch(action);
 
-    expect(store.getState().movies)
-      .toEqual(moviesReducer({ isLoading: true }, action));
+    expect(store.getState().movies).toEqual(moviesReducer({ isLoading: true }, action));
   });
 });

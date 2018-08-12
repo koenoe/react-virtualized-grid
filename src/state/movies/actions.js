@@ -52,8 +52,10 @@ const fetchMoviesSuccess = (payload: any): FetchMoviesSuccessAction => ({
 export const fetchMovies = (page?: number = 1): ThunkAction => async (dispatch: Dispatch) => {
   dispatch(fetchMoviesRequest());
   try {
-    // $FlowFixMe
-    const { result } = await callApi(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&page=${page}`);
+    const { result } = await callApi(
+      // $FlowFixMe
+      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&page=${page}`,
+    );
     dispatch(fetchMoviesSuccess(result));
   } catch (error) {
     dispatch(fetchMoviesFailure(error));

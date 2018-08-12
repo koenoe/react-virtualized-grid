@@ -25,10 +25,7 @@ const initialState: State = {
   totalNumberOfPages: 0,
 };
 
-export default function (
-  state: State = initialState,
-  action: MoviesAction,
-): State {
+export default function(state: State = initialState, action: MoviesAction): State {
   switch (action.type) {
     case FETCH_MOVIES_REQUEST:
       return {
