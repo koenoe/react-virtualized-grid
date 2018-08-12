@@ -164,6 +164,7 @@ class MovieGrid extends PureComponent<Props, State> {
                   }
                   this.cellMostRecentWidth = width;
                   this.registerList = registerChild;
+
                   return (
                     <List
                       autoHeight
