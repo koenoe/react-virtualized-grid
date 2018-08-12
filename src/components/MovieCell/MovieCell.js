@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import Img from 'react-image';
 
 import styles from './MovieCell.css';
 
@@ -13,7 +14,7 @@ function MovieCell(props: Props): Node {
   const { movie } = props;
   return (
     <div className={styles.item}>
-      <img
+      <Img
         className={styles.image}
         src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
         alt={`${movie.title} poster`}

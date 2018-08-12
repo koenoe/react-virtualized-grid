@@ -2,7 +2,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { AutoSizer, List, InfiniteLoader, WindowScroller } from 'react-virtualized';
+import {
+  AutoSizer,
+  List,
+  InfiniteLoader,
+  WindowScroller,
+  CellMeasurer,
+  CellMeasurerCache,
+} from 'react-virtualized';
 
 import { fetchMovies as fetchMoviesAction } from 'state/movies/actions';
 import * as movieSelectors from 'state/movies/selectors';
@@ -44,8 +51,21 @@ class MovieGrid extends PureComponent<Props, State> {
   state: State;
   loadMore: (*) => void;
 
+  cellMeasurerCache: *;
+  cellMostRecentWidth: number;
+  resizeAllFlag: boolean;
+  list: *;
+  registerList: (*) => void;
+
   constructor(props: Props) {
     super(props);
+
+    this.cellMeasurerCache = new CellMeasurerCache({
+      defaultHeight: 100,
+      fixedWidth: true,
+    });
+    this.cellMostRecentWidth = 0;
+    this.resizeAllFlag = false;
 
     this.loadMore = this.loadMore.bind(this);
   }
@@ -54,10 +74,39 @@ class MovieGrid extends PureComponent<Props, State> {
     this.props.fetchMovies();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.resizeAllFlag) {
+      this.resizeAllFlag = false;
+      this.cellMeasurerCache.clearAll();
+      if (this.list) {
+        this.list.recomputeRowHeights();
+      }
+    } else if (this.props.movieIds !== prevProps.movieIds) {
+      const index = prevProps.movieIds.length;
+      this.cellMeasurerCache.clear(index, 0);
+      if (this.list) {
+        this.list.recomputeRowHeights(index);
+      }
+    }
+  }
+
   loadMore() {
     const { currentPage } = this.props;
     return this.props.fetchMovies(currentPage + 1);
   }
+
+  resizeAll = () => {
+    this.resizeAllFlag = false;
+    this.cellMeasurerCache.clearAll();
+    if (this.list) {
+      this.list.recomputeRowHeights();
+    }
+  };
+
+  setListRef = ref => {
+    this.list = ref;
+    this.registerList(ref);
+  };
 
   render() {
     const { currentPage, movieIds, isLoading, totalNumberOfPages, totalNumberOfItems } = this.props;
@@ -75,48 +124,52 @@ class MovieGrid extends PureComponent<Props, State> {
     const isRowLoaded = ({ index }) => !hasNextPage || index < movieIds.length;
 
     // Render a list item or a loading indicator.
-    const rowRenderer = ({ index, key, style }) => {
-      let content;
-
-      if (!isRowLoaded({ index })) {
-        content = 'Loading &hellip;';
-      } else {
-        content = <MovieCell id={movieIds[index]} />;
-      }
-
-      return (
+    const rowRenderer = ({ index, key, style, parent }) => (
+      <CellMeasurer
+        cache={this.cellMeasurerCache}
+        columnIndex={0}
+        key={key}
+        parent={parent}
+        rowIndex={index}
+        width={this.cellMostRecentWidth}
+      >
         <div key={key} style={style}>
-          {content}
+          {isRowLoaded({ index }) ? <MovieCell id={movieIds[index]} /> : 'Loading &hellip;'}
         </div>
-      );
-    };
+      </CellMeasurer>
+    );
 
     return movieIds ? (
       <InfiniteLoader
         isRowLoaded={isRowLoaded}
         loadMoreRows={loadMoreRows}
-        rowCount={totalNumberOfItems}
         minimumBatchSize={20}
+        rowCount={totalNumberOfItems}
       >
         {({ onRowsRendered, registerChild }) => (
           <WindowScroller scrollElement={window}>
             {({ height, isScrolling, onChildScroll, scrollTop }) => (
               <AutoSizer disableHeight>
-                {({ width }) => (
-                  <List
-                    ref={registerChild}
-                    onRowsRendered={onRowsRendered}
-                    rowRenderer={rowRenderer}
-                    height={height}
-                    width={width}
-                    rowHeight={250}
-                    rowCount={rowCount}
-                    isScrolling={isScrolling}
-                    onScroll={onChildScroll}
-                    scrollTop={scrollTop}
-                    autoHeight
-                  />
-                )}
+                {({ width }) => {
+                  this.cellMostRecentWidth = width;
+                  this.registerList = registerChild;
+                  return (
+                    <List
+                      autoHeight
+                      deferredMeasurementCache={this.cellMeasurerCache}
+                      height={height}
+                      isScrolling={isScrolling}
+                      onRowsRendered={onRowsRendered}
+                      onScroll={onChildScroll}
+                      ref={this.setListRef}
+                      rowCount={rowCount}
+                      rowHeight={this.cellMeasurerCache.rowHeight}
+                      rowRenderer={rowRenderer}
+                      scrollTop={scrollTop}
+                      width={width}
+                    />
+                  );
+                }}
               </AutoSizer>
             )}
           </WindowScroller>
