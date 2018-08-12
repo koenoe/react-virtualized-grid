@@ -1,6 +1,6 @@
 // @flow
-import * as React from 'react';
-import { ConnectedRouter } from 'react-router-redux';
+import React, { Fragment } from 'react';
+import { ConnectedRouter } from 'connected-react-router';
 import { Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
@@ -17,7 +17,9 @@ type Props = {
 export default ({ store, history }: Props) => (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <Route path="/" component={Home} />
+      <Fragment>
+        <Route exact path="/" component={Home} />
+      </Fragment>
     </ConnectedRouter>
   </Provider>
 );

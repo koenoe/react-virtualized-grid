@@ -1,25 +1,21 @@
 // @flow
-import { routerReducer } from 'react-router-redux';
 
+import moviesReducer from 'state/movies/reducer';
 import { configureStore } from 'state/configureStore';
 
+import type { MoviesAction } from 'state/movies/actions';
 import type { Store } from 'state/configureStore';
 
 describe('Reducers', () => {
   const store: Store = configureStore();
 
-  it('should delegate a `routing` action to the `routerReducer` reducer', () => {
-    const action: any = {
-      type: '@@router/LOCATION_CHANGE',
-      location: {
-        pathname: '/',
-        search: '',
-        hash: '',
-      },
+  it('should delegate a `movies` action to the `movies` reducer', () => {
+    const action: MoviesAction = {
+      type: 'movies/FETCH_MOVIES_REQUEST',
     };
     store.dispatch(action);
 
-    expect(store.getState().routing)
-      .toEqual(routerReducer(undefined, action));
+    expect(store.getState().movies)
+      .toEqual(moviesReducer({ isLoading: true }, action));
   });
 });

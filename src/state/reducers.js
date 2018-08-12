@@ -1,9 +1,10 @@
 // @flow
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux';
+
+import moviesReducer from 'state/movies/reducer';
 
 const reducers: any = combineReducers({
-  routing: routerReducer,
+  movies: moviesReducer,
 });
 
 export default reducers;

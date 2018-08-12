@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from 'redux';
 import reduxImmutableStateInvariant from 'redux-immutable-state-invariant';
 import thunk from 'redux-thunk';
 import createHistory from 'history/createBrowserHistory';
-import { routerMiddleware } from 'react-router-redux';
+import { routerMiddleware, connectRouter } from 'connected-react-router';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer from 'state/reducers';
@@ -18,6 +18,7 @@ export type Store = ReduxStore<State, Action>;
 const history: BrowserHistory = createHistory();
 
 function configureStore(initialState?: State): Store {
+  const connectedRootReducer: any = connectRouter(history)(rootReducer);
   const reactRouterMiddleware: any = routerMiddleware(history);
   const middlewares: Array<any> = [
     thunk,
@@ -28,14 +29,14 @@ function configureStore(initialState?: State): Store {
   }
   const composeEnhancers: any = composeWithDevTools({});
   const store: Store = createStore(
-    rootReducer,
+    connectedRootReducer,
     initialState,
     composeEnhancers(applyMiddleware(...middlewares)),
   );
 
   if (module.hot) {
     module.hot.accept('state/reducers', (): void => {
-      store.replaceReducer(rootReducer);
+      store.replaceReducer(connectedRootReducer);
     });
   }
 

@@ -10,7 +10,6 @@ import Root from 'components/Root';
 
 import type { Store } from 'state/configureStore';
 
-
 const store: Store = configureStore();
 
 render(
