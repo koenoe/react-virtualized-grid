@@ -13,7 +13,7 @@
     "flow:watch": "flow-bro watch",
     "lint": "esw webpack.config.* src --color",
     "lint:watch": "yarn lint --watch",
-    "prebuild": "yarn lint && yarn test && yarn clean-dist && yarn cname",
+    "prebuild": "yarn lint && yarn test && yarn clean-dist",
     "serve": "webpack-serve --port 3000 --log-level error --config ./webpack.config.dev.js",
     "start": "concurrently -k -r -s first \"yarn test:watch\" \"yarn serve\" \"yarn flow:watch\" \"yarn lint:watch\"",
     "test": "jest",
