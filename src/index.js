@@ -20,13 +20,16 @@ render(
 );
 
 if (module.hot) {
-  module.hot.accept('components/Root', (): void => {
-    const NewRoot: any = require('components/Root').default; // eslint-disable-line global-require
-    render(
-      <AppContainer>
-        <NewRoot store={store} history={history} />
-      </AppContainer>,
-      (document.getElementById('root'): any),
-    );
-  });
+  module.hot.accept(
+    'components/Root',
+    (): void => {
+      const NewRoot: any = require('components/Root').default; // eslint-disable-line global-require
+      render(
+        <AppContainer>
+          <NewRoot store={store} history={history} />
+        </AppContainer>,
+        (document.getElementById('root'): any),
+      );
+    },
+  );
 }
