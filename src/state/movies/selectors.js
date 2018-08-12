@@ -7,6 +7,10 @@ export const moviesState = (state: State) => state.movies;
 
 export const isLoading = createSelector([moviesState], state => state.isLoading);
 
+export const currentPage = createSelector([moviesState], state => state.currentPage);
+export const totalNumberOfItems = createSelector([moviesState], state => state.totalNumberOfItems);
+export const totalNumberOfPages = createSelector([moviesState], state => state.totalNumberOfPages);
+
 export const movies = createSelector([moviesState], state => state.items);
 
 export const movieIds = createSelector(

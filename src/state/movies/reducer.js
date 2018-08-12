@@ -1,4 +1,5 @@
 // @flow
+import produce from 'immer';
 import {
   FETCH_MOVIES_REQUEST,
   FETCH_MOVIES_FAILURE,
@@ -8,12 +9,12 @@ import {
 import type { MoviesAction } from 'state/movies/actions';
 
 export type State = {|
-  +error?: any,
-  +isLoading: boolean,
-  +items?: Array<Object>,
-  +currentPage?: number,
-  +totalNumberOfItems?: number,
-  +totalNumberOfPages?: number,
+  error: any,
+  isLoading: boolean,
+  items: Array<Object>,
+  currentPage: number,
+  totalNumberOfItems?: number,
+  totalNumberOfPages?: number,
 |};
 
 const initialState: State = {
@@ -25,26 +26,26 @@ const initialState: State = {
   totalNumberOfPages: 0,
 };
 
-export default function(state: State = initialState, action: MoviesAction): State {
+const reducer = produce((draft: State, action: MoviesAction) => {
   switch (action.type) {
     case FETCH_MOVIES_REQUEST:
-      return {
-        isLoading: true,
-      };
+      draft.isLoading = true;
+      break;
     case FETCH_MOVIES_SUCCESS:
-      return {
-        isLoading: false,
-        items: action.items,
-        currentPage: action.currentPage,
-        totalNumberOfItems: action.totalNumberOfItems,
-        totalNumberOfPages: action.totalNumberOfPages,
-      };
+      draft.isLoading = false;
+      draft.items = draft.items.concat(action.items);
+      draft.currentPage = action.currentPage;
+      draft.totalNumberOfItems = action.totalNumberOfItems;
+      draft.totalNumberOfPages = action.totalNumberOfPages;
+      break;
     case FETCH_MOVIES_FAILURE:
-      return {
-        isLoading: false,
-        error: action.error,
-      };
+      draft.isLoading = false;
+      draft.error = action.error;
+      break;
     default:
-      return state;
+      return draft;
   }
-}
+  return draft;
+}, initialState);
+
+export default reducer;

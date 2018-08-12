@@ -64,6 +64,7 @@
           "render"
         ]
       }
-    ]
+    ],
+    "no-param-reassign": 0
   }
 }

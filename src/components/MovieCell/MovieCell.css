@@ -10,3 +10,15 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.image {
+  max-width: 100%;
+  height: auto;
+  width: 100%;
+  display: block;
+  contain: layout;
+}
+
+.item {
+  width: 100px;
+}
