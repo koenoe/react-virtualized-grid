@@ -4,6 +4,7 @@ const PreloadWebpackPlugin = require('preload-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 const autoprefixer = require('autoprefixer');
+const Dotenv = require('dotenv-webpack');
 
 const projectRoot = path.resolve(__dirname);
 
@@ -29,6 +30,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   plugins: [
+    new Dotenv(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'), // Tells React to build in either dev or prod modes. https://facebook.github.io/react/downloads.html (See bottom)
       __DEV__: true,

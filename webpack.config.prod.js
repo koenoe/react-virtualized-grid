@@ -9,6 +9,7 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const projectRoot = path.resolve(__dirname);
 
@@ -37,6 +38,8 @@ module.exports = {
     filename: '[name].[chunkhash].js',
   },
   plugins: [
+    new Dotenv(),
+
     // Hash the files using MD5 so that their names change when the content changes.
     new WebpackMd5Hash(),
 

@@ -1,4 +1,6 @@
 // @flow
+import { callApi } from 'utils/api';
+
 import type { Dispatch as ReduxDispatch } from 'redux';
 
 type FetchMoviesRequestAction = {|
@@ -13,6 +15,9 @@ type FetchMoviesFailureAction = {|
 type FetchMoviesSuccessAction = {|
   type: 'movies/FETCH_MOVIES_SUCCESS',
   items: Array<Object>,
+  currentPage: number,
+  totalNumberOfItems: number,
+  totalNumberOfPages: number,
 |};
 
 export type MoviesAction =
@@ -36,23 +41,20 @@ const fetchMoviesFailure = (error: any): FetchMoviesFailureAction => ({
   error,
 });
 
-const fetchMoviesSuccess = (items: Array<Object>): FetchMoviesSuccessAction => ({
+const fetchMoviesSuccess = (payload: any): FetchMoviesSuccessAction => ({
   type: FETCH_MOVIES_SUCCESS,
-  items,
+  items: payload.results || [],
+  currentPage: payload.page || 0,
+  totalNumberOfItems: payload.total_results || 0,
+  totalNumberOfPages: payload.total_pages || 0,
 });
 
-export const fetchMovies = (): ThunkAction => async (dispatch: Dispatch) => {
+export const fetchMovies = (page?: number = 1): ThunkAction => async (dispatch: Dispatch) => {
   dispatch(fetchMoviesRequest());
   try {
-    // api call here
-    dispatch(fetchMoviesSuccess([
-      { foo: 'bar' },
-      { foo: 'bar' },
-      { foo: 'bar' },
-      { foo: 'bar' },
-      { foo: 'bar' },
-      { foo: 'bar' },
-    ]));
+    // $FlowFixMe
+    const { result } = await callApi(`https://api.themoviedb.org/3/movie/popular?api_key=${process.env.API_KEY}&page=${page}`);
+    dispatch(fetchMoviesSuccess(result));
   } catch (error) {
     dispatch(fetchMoviesFailure(error));
   }

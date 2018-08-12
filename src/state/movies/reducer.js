@@ -11,10 +11,18 @@ export type State = {|
   +error?: any,
   +isLoading: boolean,
   +items?: Array<Object>,
+  +currentPage?: number,
+  +totalNumberOfItems?: number,
+  +totalNumberOfPages?: number,
 |};
 
 const initialState: State = {
   isLoading: false,
+  error: null,
+  items: [],
+  currentPage: 0,
+  totalNumberOfItems: 0,
+  totalNumberOfPages: 0,
 };
 
 export default function (
@@ -30,6 +38,9 @@ export default function (
       return {
         isLoading: false,
         items: action.items,
+        currentPage: action.currentPage,
+        totalNumberOfItems: action.totalNumberOfItems,
+        totalNumberOfPages: action.totalNumberOfPages,
       };
     case FETCH_MOVIES_FAILURE:
       return {
