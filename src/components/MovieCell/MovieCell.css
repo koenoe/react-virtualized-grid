@@ -1,4 +1,12 @@
-.item {
-  background: yellow;
-  margin: 10px;
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

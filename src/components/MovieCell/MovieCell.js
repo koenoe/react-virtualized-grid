@@ -12,9 +12,11 @@ type Props = {|
 function MovieCell(props: Props): Node {
   const { movie } = props;
   return (
-    <div className={styles.item}>
-      {movie.title}
+    <div>
       <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} alt="" />
+      <div className={styles.titleWrapper}>
+        <div className={styles.title}>{movie.title}</div>
+      </div>
     </div>
   );
 }
