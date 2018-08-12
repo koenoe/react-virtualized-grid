@@ -1,7 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { createStructuredSelector } from 'reselect';
 
 import { fetchMovies as fetchMoviesAction } from 'state/movies/actions';
 import * as movieSelectors from 'state/movies/selectors';
@@ -25,14 +25,10 @@ type Props = {| ...OwnProps, ...OutProps, ...DispatchProps |};
 
 type State = {||};
 
-export const mapStateToProps: State => OutProps = createSelector(
-  movieSelectors.isLoading,
-  movieSelectors.movieIds,
-  (isLoading, movieIds) => ({
-    isLoading,
-    movieIds,
-  }),
-);
+export const mapStateToProps: State => OutProps = createStructuredSelector({
+  isLoading: movieSelectors.isLoading,
+  movieIds: movieSelectors.movieIds,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<*>): DispatchProps => ({
   fetchMovies: () => dispatch(fetchMoviesAction()),
