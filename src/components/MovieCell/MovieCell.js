@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import Img from 'react-image';
+// import Img from 'react-image';
 
 import styles from './MovieCell.css';
 
@@ -8,13 +8,15 @@ import type { Node } from 'react';
 
 type Props = {|
   movie: Object,
+  onLoad: void,
 |};
 
 function MovieCell(props: Props): Node {
-  const { movie } = props;
+  const { movie, onLoad } = props;
   return (
     <div className={styles.item}>
-      <Img
+      <img
+        onLoad={onLoad}
         className={styles.image}
         src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
         alt={`${movie.title} poster`}

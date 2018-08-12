@@ -61,7 +61,7 @@ class MovieGrid extends PureComponent<Props, State> {
     super(props);
 
     this.cellMeasurerCache = new CellMeasurerCache({
-      defaultHeight: 100,
+      defaultHeight: 175,
       fixedWidth: true,
     });
     this.cellMostRecentWidth = 0;
@@ -133,9 +133,15 @@ class MovieGrid extends PureComponent<Props, State> {
         rowIndex={index}
         width={this.cellMostRecentWidth}
       >
-        <div key={key} style={style}>
-          {isRowLoaded({ index }) ? <MovieCell id={movieIds[index]} /> : 'Loading &hellip;'}
-        </div>
+        {({ measure }) => (
+          <div key={key} style={style}>
+            {isRowLoaded({ index }) ? (
+              <MovieCell onLoad={measure} id={movieIds[index]} />
+            ) : (
+              'Loading &hellip;'
+            )}
+          </div>
+        )}
       </CellMeasurer>
     );
 
@@ -151,6 +157,10 @@ class MovieGrid extends PureComponent<Props, State> {
             {({ height, isScrolling, onChildScroll, scrollTop }) => (
               <AutoSizer disableHeight>
                 {({ width }) => {
+                  if (this.cellMostRecentWidth && this.cellMostRecentWidth !== width) {
+                    this.resizeAllFlag = true;
+                    setTimeout(this.resizeAll, 0);
+                  }
                   this.cellMostRecentWidth = width;
                   this.registerList = registerChild;
                   return (
