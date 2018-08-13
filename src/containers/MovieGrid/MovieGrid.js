@@ -70,13 +70,15 @@ class MovieGrid extends PureComponent<Props, State> {
         totalNumberOfItems={totalNumberOfItems}
         numberOfItems={movieIds.length}
       >
-        {({ isCellLoaded, index, measure }) =>
-          isCellLoaded ? (
-            <MovieCell onLoad={measure} key={movieIds[index]} id={movieIds[index]} />
-          ) : (
-            <div key={index}>Loading &hellip;</div>
-          )
-        }
+        {({ isCellLoaded, index, measure, style }) => (
+          <div key={index} style={style}>
+            {isCellLoaded ? (
+              <MovieCell onLoad={measure} id={movieIds[index]} />
+            ) : (
+              <div>Loading &hellip;</div>
+            )}
+          </div>
+        )}
       </Grid>
     );
   }

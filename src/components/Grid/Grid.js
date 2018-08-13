@@ -16,16 +16,17 @@ import type { Node } from 'react';
 
 type ChildrenFn = ({
   index: number,
-  measure: void,
   isCellLoaded: boolean,
+  measure: void,
+  style: Object,
 }) => Node;
 
 type Props = {|
   children: ChildrenFn,
   hasNextPage: boolean,
   isLoading: boolean,
-  numberOfItems: number,
   loadMore: Function,
+  numberOfItems: number,
   totalNumberOfItems: number,
 |};
 
@@ -34,9 +35,12 @@ class Grid extends PureComponent<Props, State> {
   calculateColumnCount: () => number;
   cellMeasurerCache: *;
   list: *;
+  mostRecentHeight: number;
   mostRecentWidth: number;
   registerList: (*) => void;
+  resizeAll: () => void;
   resizeAllFlag: boolean;
+  setListRef: () => void;
   state: State;
 
   constructor(props: Props) {
@@ -46,8 +50,11 @@ class Grid extends PureComponent<Props, State> {
       fixedWidth: true,
     });
     this.mostRecentWidth = 0;
+    this.mostRecentHeight = 0;
     this.resizeAllFlag = false;
 
+    this.setListRef = this.setListRef.bind(this);
+    this.resizeAll = this.resizeAll.bind(this);
     this.calculateColumnCount = this.calculateColumnCount.bind(this);
   }
 
@@ -69,42 +76,39 @@ class Grid extends PureComponent<Props, State> {
 
   calculateColumnCount(): number {
     const width = this.mostRecentWidth;
-    if (width > 1500 && width < 1700) {
-      return 7;
-    }
-    if (width > 1300 && width < 1500) {
+    if (width >= 1300 && width <= 1500) {
       return 6;
     }
-    if (width > 1100 && width < 1300) {
+    if (width >= 1100 && width <= 1300) {
       return 5;
     }
-    if (width > 900 && width < 1100) {
+    if (width >= 900 && width <= 1100) {
       return 4;
     }
-    if (width > 700 && width < 900) {
+    if (width >= 700 && width <= 900) {
       return 3;
     }
-    if (width > 500 && width < 700) {
+    if (width >= 500 && width <= 700) {
       return 2;
     }
-    if (width < 500) {
+    if (width <= 500) {
       return 1;
     }
     return 8;
   }
 
-  resizeAll = () => {
+  resizeAll() {
     this.resizeAllFlag = false;
     this.cellMeasurerCache.clearAll();
     if (this.list) {
       this.list.recomputeRowHeights();
     }
-  };
+  }
 
-  setListRef = (ref: *) => {
+  setListRef(ref: *) {
     this.list = ref;
     this.registerList(ref);
-  };
+  }
 
   render() {
     const {
@@ -125,6 +129,7 @@ class Grid extends PureComponent<Props, State> {
     // Render a list item or a loading indicator.
     const rowRenderer = ({ index, key, style, parent }) => {
       const columnCount = this.calculateColumnCount();
+      const columnWidth = Math.ceil(this.mostRecentWidth / columnCount);
       const fromIndex = index * columnCount;
       const toIndex = Math.min(fromIndex + columnCount, numberOfItems);
       const fromTo = range(fromIndex, toIndex);
@@ -135,11 +140,19 @@ class Grid extends PureComponent<Props, State> {
           parent={parent}
           rowIndex={index}
           width={this.mostRecentWidth}
+          height={this.mostRecentHeight}
         >
           {({ measure }) => (
             <div className={styles.grid} key={key} style={style}>
               {fromTo.map(i =>
-                children({ index: i, measure, isCellLoaded: isCellLoaded({ index }) }),
+                children({
+                  index: i,
+                  isCellLoaded: isCellLoaded({ index }),
+                  measure,
+                  style: {
+                    width: columnWidth,
+                  },
+                }),
               )}
             </div>
           )}
@@ -164,12 +177,13 @@ class Grid extends PureComponent<Props, State> {
                     setTimeout(this.resizeAll, 0);
                   }
                   this.mostRecentWidth = width;
+                  this.mostRecentHeight = height;
                   this.registerList = registerChild;
                   return (
                     <List
                       autoHeight
                       deferredMeasurementCache={this.cellMeasurerCache}
-                      height={height}
+                      height={this.mostRecentHeight}
                       isScrolling={isScrolling}
                       onRowsRendered={onRowsRendered}
                       onScroll={onChildScroll}
@@ -178,7 +192,7 @@ class Grid extends PureComponent<Props, State> {
                       rowHeight={this.cellMeasurerCache.rowHeight}
                       rowRenderer={rowRenderer}
                       scrollTop={scrollTop}
-                      width={width}
+                      width={this.mostRecentWidth}
                     />
                   );
                 }}

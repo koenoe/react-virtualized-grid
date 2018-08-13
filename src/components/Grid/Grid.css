@@ -1,51 +1,20 @@
+:root {
+  --gutter-width: 20px;
+  --gutter-compensation: calc((var(--gutter-width) * 0.5) * -1);
+  --half-gutter-width: calc((var(--gutter-width) * 0.5));
+}
+
 .grid {
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: repeat(8, 1fr);
+  box-sizing: border-box;
+  display: flex;
+  /* margin-left: var(--gutter-compensation);
+  margin-right: var(--gutter-compensation); */
 }
 
 .grid > div {
-  margin-bottom: 20px;
-}
-
-@media screen and (max-width: 1700px) {
-  .grid {
-    grid-template-columns: repeat(7, 1fr);
-  }
-}
-
-@media screen and (max-width: 1500px) {
-  .grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  .grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media screen and (max-width: 1100px) {
-  .grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media screen and (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  padding-right: var(--half-gutter-width);
+  padding-left: var(--half-gutter-width);
+  margin-bottom: var(--gutter-width);
 }
