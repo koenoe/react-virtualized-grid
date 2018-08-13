@@ -139,25 +139,26 @@ class MovieGrid extends PureComponent<Props, State> {
 
   render() {
     const { currentPage, movieIds, isLoading, totalNumberOfPages, totalNumberOfItems } = this.props;
-
     const hasNextPage = currentPage < totalNumberOfPages;
-
     // Only load 1 page of items at a time.
     // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
     const loadMoreRows = isLoading ? () => {} : this.loadMore;
-
     // Every row is loaded except for our loading indicator row.
     const isCellLoaded = ({ index }) => !hasNextPage || index < movieIds.length;
     const isRowLoaded = ({ index }) =>
       !hasNextPage || index < Math.ceil(movieIds.length / this.calculateColumnCount());
-
+    const cellRenderer = ({ index, measure }) =>
+      isCellLoaded({ index }) ? (
+        <MovieCell onLoad={measure} key={movieIds[index]} id={movieIds[index]} />
+      ) : (
+        <div key={index}>Loading &hellip;</div>
+      );
     // Render a list item or a loading indicator.
     const rowRenderer = ({ index, key, style, parent }) => {
       const columnCount = this.calculateColumnCount();
       const fromIndex = index * columnCount;
       const toIndex = Math.min(fromIndex + columnCount, movieIds.length);
       const fromTo = range(fromIndex, toIndex);
-
       return (
         <CellMeasurer
           cache={this.cellMeasurerCache}
@@ -168,14 +169,7 @@ class MovieGrid extends PureComponent<Props, State> {
         >
           {({ measure }) => (
             <div className={styles.grid} key={key} style={style}>
-              {fromTo.map(
-                i =>
-                  isCellLoaded({ index: i }) ? (
-                    <MovieCell onLoad={measure} key={movieIds[i]} id={movieIds[i]} />
-                  ) : (
-                    <div key={i}>Loading &hellip;</div>
-                  ),
-              )}
+              {fromTo.map(i => cellRenderer({ index: i, measure }))}
             </div>
           )}
         </CellMeasurer>
@@ -200,7 +194,6 @@ class MovieGrid extends PureComponent<Props, State> {
                   }
                   this.mostRecentWidth = width;
                   this.registerList = registerChild;
-
                   return (
                     <List
                       autoHeight
