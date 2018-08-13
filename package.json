@@ -15,7 +15,7 @@
     "lint:watch": "yarn lint --watch",
     "prebuild": "yarn lint && yarn test && yarn clean-dist",
     "serve": "webpack-serve --port 3000 --log-level error --config ./webpack.config.dev.js",
-    "start": "concurrently -k -r -s first \"yarn test:watch\" \"yarn serve\" \"yarn flow:watch\" \"yarn lint:watch\"",
+    "start": "concurrently -k -r -s first \"yarn test:watch\" \"yarn serve\" \"yarn lint:watch\"",
     "test": "jest",
     "test:cover": "yarn test --coverage",
     "test:coveralls": "yarn test:cover && cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
@@ -24,7 +24,7 @@
   "dependencies": {
     "babel-polyfill": "6.26.0",
     "classnames": "2.2.6",
-    "connected-react-router": "4.4.0",
+    "connected-react-router": "4.4.1",
     "history": "4.7.2",
     "immer": "1.5.0",
     "lodash": "4.17.10",
@@ -40,7 +40,7 @@
     "reselect": "3.0.1"
   },
   "devDependencies": {
-    "autoprefixer": "8.3.0",
+    "autoprefixer": "9.1.1",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.3",
     "babel-eslint": "8.2.6",

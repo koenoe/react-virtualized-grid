@@ -35,7 +35,6 @@ class Grid extends PureComponent<Props, State> {
   calculateColumnCount: () => number;
   cellMeasurerCache: *;
   list: *;
-  mostRecentHeight: number;
   mostRecentWidth: number;
   registerList: (*) => void;
   resizeAll: () => void;
@@ -50,7 +49,6 @@ class Grid extends PureComponent<Props, State> {
       fixedWidth: true,
     });
     this.mostRecentWidth = 0;
-    this.mostRecentHeight = 0;
     this.resizeAllFlag = false;
 
     this.setListRef = this.setListRef.bind(this);
@@ -140,7 +138,6 @@ class Grid extends PureComponent<Props, State> {
           parent={parent}
           rowIndex={index}
           width={this.mostRecentWidth}
-          height={this.mostRecentHeight}
         >
           {({ measure }) => (
             <div className={styles.grid} key={key} style={style}>
@@ -177,13 +174,12 @@ class Grid extends PureComponent<Props, State> {
                     setTimeout(this.resizeAll, 0);
                   }
                   this.mostRecentWidth = width;
-                  this.mostRecentHeight = height;
                   this.registerList = registerChild;
                   return (
                     <List
                       autoHeight
                       deferredMeasurementCache={this.cellMeasurerCache}
-                      height={this.mostRecentHeight}
+                      height={height}
                       isScrolling={isScrolling}
                       onRowsRendered={onRowsRendered}
                       onScroll={onChildScroll}
