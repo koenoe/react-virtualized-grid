@@ -4,6 +4,10 @@
   grid-template-columns: repeat(8, 1fr);
 }
 
+.grid > div {
+  margin-bottom: 20px;
+}
+
 @media screen and (max-width: 1700px) {
   .grid {
     grid-template-columns: repeat(7, 1fr);
@@ -28,13 +32,19 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 700px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 500px) {
   .grid {
     grid-template-columns: repeat(1, 1fr);
   }
