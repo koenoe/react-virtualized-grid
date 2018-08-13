@@ -13,7 +13,7 @@
 
 .grid > div {
   box-sizing: border-box;
-  flex: 0 0 auto;
+  flex: 1;
   padding-right: var(--half-gutter-width);
   padding-left: var(--half-gutter-width);
   margin-bottom: var(--gutter-width);

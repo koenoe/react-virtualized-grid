@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import styles from './MovieCell.css';
 
@@ -16,12 +16,12 @@ function MovieCell(props: Props): Node {
     ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
     : 'http://placekitten.com/500/750';
   return (
-    <div className={styles.item}>
+    <Fragment>
       <img onLoad={onLoad} className={styles.image} src={src} alt={`${movie.title} poster`} />
       <div className={styles.titleWrapper}>
         <div className={styles.title}>{movie.title}</div>
       </div>
-    </div>
+    </Fragment>
   );
 }
 
