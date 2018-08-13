@@ -64,8 +64,6 @@ class MovieGrid extends PureComponent<Props, State> {
     super(props);
 
     this.cellMeasurerCache = new CellMeasurerCache({
-      defaultHeight: 175,
-      defaultWidth: 100,
       fixedWidth: true,
     });
     this.mostRecentWidth = 0;
