@@ -88,10 +88,10 @@ class Grid extends PureComponent<Props, State> {
     if (width >= 700 && width <= 900) {
       return 3;
     }
-    if (width >= 500 && width <= 700) {
+    if (width >= 400 && width <= 700) {
       return 2;
     }
-    if (width <= 500) {
+    if (width <= 400) {
       return 1;
     }
     return 8;
