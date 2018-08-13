@@ -47,6 +47,8 @@ class Grid extends PureComponent<Props, State> {
 
     this.cellMeasurerCache = new CellMeasurerCache({
       fixedWidth: true,
+      defaultHeight: 375,
+      defaultWidth: 250,
     });
     this.mostRecentWidth = 0;
     this.resizeAllFlag = false;
