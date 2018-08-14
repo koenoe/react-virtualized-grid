@@ -87,7 +87,7 @@ class Grid extends PureComponent<Props> {
                           onRowsRendered={onRowsRendered}
                           onScroll={onChildScroll}
                           rowCount={rowCount}
-                          rowHeight={(width / columnCount) * aspectRatio + halfGutterSize}
+                          rowHeight={(width / columnCount) * aspectRatio + gutterSize}
                           rowRenderer={({ index, key, style }) => {
                             const fromIndex = index * columnCount;
                             const toIndex = Math.min(fromIndex + columnCount, numberOfItems);
@@ -101,7 +101,7 @@ class Grid extends PureComponent<Props> {
                                     style: {
                                       width: width / columnCount - gutterSize,
                                       height: '100%',
-                                      padding: `0 ${halfGutterSize}px`,
+                                      margin: `0 ${halfGutterSize}px`,
                                     },
                                   }),
                                 )}
