@@ -1,9 +1,9 @@
 // @flow
+import type { Node } from 'react';
+
 import React from 'react';
 
 import styles from './Placeholder.css';
-
-import type { Node } from 'react';
 
 function Placeholder(): Node {
   return (

@@ -1,10 +1,10 @@
 // @flow
+import type { Node } from 'react';
+
 import React, { Fragment } from 'react';
 
-import styles from './Home.css';
 import MovieGrid from 'containers/MovieGrid';
-
-import type { Node } from 'react';
+import styles from './Home.css';
 
 function Home(): Node {
   return (

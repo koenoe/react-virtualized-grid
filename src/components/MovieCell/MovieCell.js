@@ -1,11 +1,11 @@
 // @flow
+import type { Node } from 'react';
+
 import React from 'react';
 import Img from 'react-image';
 
 import Placeholder from 'components/Placeholder';
 import styles from './MovieCell.css';
-
-import type { Node } from 'react';
 
 type Props = {|
   movie: Object,

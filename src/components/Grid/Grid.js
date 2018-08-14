@@ -1,11 +1,11 @@
 // @flow
+import type { Node } from 'react';
+
 import React, { PureComponent } from 'react';
 import { range } from 'lodash';
 import { AutoSizer, InfiniteLoader, List, WindowScroller } from 'react-virtualized';
 
 import styles from './Grid.css';
-
-import type { Node } from 'react';
 
 type ChildrenFn = ({
   index: number,

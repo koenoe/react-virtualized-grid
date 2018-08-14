@@ -42,6 +42,7 @@ const mapDispatchToProps = (dispatch: Dispatch<*>): DispatchProps => ({
 
 class MovieGrid extends PureComponent<Props, State> {
   state: State;
+
   loadMore: () => void;
 
   constructor(props: Props) {
@@ -51,12 +52,13 @@ class MovieGrid extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    this.props.fetchMovies();
+    const { fetchMovies } = this.props;
+    fetchMovies();
   }
 
   loadMore() {
-    const { currentPage } = this.props;
-    return this.props.fetchMovies(currentPage + 1);
+    const { currentPage, fetchMovies } = this.props;
+    return fetchMovies(currentPage + 1);
   }
 
   render() {

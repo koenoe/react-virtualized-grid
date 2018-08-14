@@ -8,7 +8,8 @@ export const callApi: Function = (url: string, options: RequestOptions) =>
       const contentType: string = response.headers.get('Content-Type') || '';
       if (contentType.indexOf('json') !== -1) {
         return response.json();
-      } else if (contentType.indexOf('text') !== -1) {
+      }
+      if (contentType.indexOf('text') !== -1) {
         return response.text();
       }
       return response;
