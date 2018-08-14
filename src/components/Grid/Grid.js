@@ -1,14 +1,7 @@
 // @flow
 import React, { PureComponent } from 'react';
 import { range } from 'lodash';
-import {
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-  InfiniteLoader,
-  List,
-  WindowScroller,
-} from 'react-virtualized';
+import { AutoSizer, InfiniteLoader, List, WindowScroller } from 'react-virtualized';
 
 import styles from './Grid.css';
 
@@ -17,190 +10,124 @@ import type { Node } from 'react';
 type ChildrenFn = ({
   index: number,
   isCellLoaded: boolean,
-  measure: void,
   style: Object,
+  isScrolling: boolean,
 }) => Node;
 
 type Props = {|
   children: ChildrenFn,
   hasNextPage: boolean,
   isLoading: boolean,
-  loadMore: Function,
   numberOfItems: number,
+  loadMore: Function,
   totalNumberOfItems: number,
+  aspectRatio: number,
+  gutterSize: number,
 |};
 
-type State = {||};
-class Grid extends PureComponent<Props, State> {
-  calculateColumnCount: () => number;
-  cellMeasurerCache: *;
-  list: *;
-  mostRecentWidth: number;
-  registerList: (*) => void;
-  resizeAll: () => void;
-  resizeAllFlag: boolean;
-  setListRef: () => void;
-  state: State;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.cellMeasurerCache = new CellMeasurerCache({
-      fixedWidth: true,
-      defaultHeight: 375,
-      defaultWidth: 250,
-    });
-    this.mostRecentWidth = 0;
-    this.resizeAllFlag = false;
-
-    this.setListRef = this.setListRef.bind(this);
-    this.resizeAll = this.resizeAll.bind(this);
-    this.calculateColumnCount = this.calculateColumnCount.bind(this);
+const calculateColumnCount = (width: number): number => {
+  if (width >= 1300 && width <= 1500) {
+    return 6;
   }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.resizeAllFlag) {
-      this.resizeAllFlag = false;
-      this.cellMeasurerCache.clearAll();
-      if (this.list) {
-        this.list.recomputeRowHeights();
-      }
-    } else if (this.props.numberOfItems !== prevProps.numberOfItems) {
-      const index = prevProps.numberOfItems;
-      this.cellMeasurerCache.clear(index, 0);
-      if (this.list) {
-        this.list.recomputeRowHeights(index);
-      }
-    }
+  if (width >= 1100 && width <= 1300) {
+    return 5;
   }
-
-  calculateColumnCount(): number {
-    const width = this.mostRecentWidth;
-    if (width >= 1300 && width <= 1500) {
-      return 6;
-    }
-    if (width >= 1100 && width <= 1300) {
-      return 5;
-    }
-    if (width >= 900 && width <= 1100) {
-      return 4;
-    }
-    if (width >= 700 && width <= 900) {
-      return 3;
-    }
-    if (width >= 400 && width <= 700) {
-      return 2;
-    }
-    if (width <= 400) {
-      return 1;
-    }
-    return 8;
+  if (width >= 900 && width <= 1100) {
+    return 4;
   }
-
-  resizeAll() {
-    this.resizeAllFlag = false;
-    this.cellMeasurerCache.clearAll();
-    if (this.list) {
-      this.list.recomputeRowHeights();
-    }
+  if (width >= 700 && width <= 900) {
+    return 3;
   }
-
-  setListRef(ref: *) {
-    this.list = ref;
-    this.registerList(ref);
+  if (width >= 400 && width <= 700) {
+    return 2;
   }
+  if (width <= 400) {
+    return 1;
+  }
+  return 8;
+};
+
+class Grid extends PureComponent<Props> {
+  static defaultProps: $Shape<Props>;
 
   render() {
     const {
+      aspectRatio,
       children,
+      gutterSize,
       hasNextPage,
       isLoading,
       loadMore,
       numberOfItems,
       totalNumberOfItems,
     } = this.props;
-    // Only load 1 page of items at a time.
-    // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-    const loadMoreRows = isLoading ? () => {} : loadMore;
-    // Every row is loaded except for our loading indicator row.
-    const isRowLoaded = ({ index }) =>
-      !hasNextPage || index < Math.ceil(numberOfItems / this.calculateColumnCount());
-    const isCellLoaded = ({ index }) => !hasNextPage || index < numberOfItems;
-    // Render a list item or a loading indicator.
-    const rowRenderer = ({ index, key, style, parent }) => {
-      const columnCount = this.calculateColumnCount();
-      const columnWidth = Math.ceil(this.mostRecentWidth / columnCount);
-      const fromIndex = index * columnCount;
-      const toIndex = Math.min(fromIndex + columnCount, numberOfItems);
-      const fromTo = range(fromIndex, toIndex);
-      return (
-        <CellMeasurer
-          cache={this.cellMeasurerCache}
-          key={key}
-          parent={parent}
-          rowIndex={index}
-          width={this.mostRecentWidth}
-        >
-          {({ measure }) => (
-            <div className={styles.grid} key={key} style={style}>
-              {fromTo.map(i =>
-                children({
-                  index: i,
-                  isCellLoaded: isCellLoaded({ index }),
-                  measure,
-                  style: {
-                    width: columnWidth,
-                  },
-                }),
-              )}
-            </div>
-          )}
-        </CellMeasurer>
-      );
-    };
-
-    return numberOfItems ? (
-      <InfiniteLoader
-        isRowLoaded={isRowLoaded}
-        loadMoreRows={loadMoreRows}
-        minimumBatchSize={20}
-        rowCount={totalNumberOfItems}
-      >
-        {({ onRowsRendered, registerChild }) => (
-          <WindowScroller scrollElement={window}>
-            {({ height, isScrolling, onChildScroll, scrollTop }) => (
-              <AutoSizer disableHeight>
-                {({ width }) => {
-                  if (this.mostRecentWidth && this.mostRecentWidth !== width) {
-                    this.resizeAllFlag = true;
-                    setTimeout(this.resizeAll, 0);
-                  }
-                  this.mostRecentWidth = width;
-                  this.registerList = registerChild;
-                  return (
-                    <List
-                      autoHeight
-                      deferredMeasurementCache={this.cellMeasurerCache}
-                      height={height}
-                      isScrolling={isScrolling}
-                      onRowsRendered={onRowsRendered}
-                      onScroll={onChildScroll}
-                      ref={this.setListRef}
-                      rowCount={Math.ceil(numberOfItems / this.calculateColumnCount())}
-                      rowHeight={this.cellMeasurerCache.rowHeight}
-                      rowRenderer={rowRenderer}
-                      scrollTop={scrollTop}
-                      width={this.mostRecentWidth}
-                    />
-                  );
-                }}
-              </AutoSizer>
-            )}
-          </WindowScroller>
-        )}
-      </InfiniteLoader>
-    ) : null;
+    return (
+      numberOfItems > 0 && (
+        <section style={{ padding: `0 ${gutterSize}px` }}>
+          <AutoSizer disableHeight>
+            {({ width }) => {
+              const columnCount = calculateColumnCount(width);
+              const rowCount = Math.ceil(numberOfItems / columnCount);
+              const halfGutterSize = gutterSize / 2;
+              return (
+                <InfiniteLoader
+                  isRowLoaded={({ index }) => !hasNextPage || index < rowCount}
+                  loadMoreRows={isLoading ? () => {} : loadMore}
+                  rowCount={Math.ceil(totalNumberOfItems / columnCount)}
+                  minimumBatchSize={5}
+                >
+                  {({ onRowsRendered, registerChild }) => (
+                    <WindowScroller scrollElement={window}>
+                      {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                        <List
+                          ref={registerChild}
+                          autoHeight
+                          height={height}
+                          isScrolling={isScrolling}
+                          onRowsRendered={onRowsRendered}
+                          onScroll={onChildScroll}
+                          rowCount={rowCount}
+                          rowHeight={(width / columnCount) * aspectRatio + halfGutterSize}
+                          rowRenderer={({ index, key, style }) => {
+                            const fromIndex = index * columnCount;
+                            const toIndex = Math.min(fromIndex + columnCount, numberOfItems);
+                            return (
+                              <div key={key} className={styles.grid} style={style}>
+                                {range(fromIndex, toIndex).map(i =>
+                                  children({
+                                    isScrolling,
+                                    index: i,
+                                    isCellLoaded: !hasNextPage || i < numberOfItems,
+                                    style: {
+                                      width: width / columnCount - gutterSize,
+                                      height: '100%',
+                                      padding: `0 ${halfGutterSize}px`,
+                                    },
+                                  }),
+                                )}
+                              </div>
+                            );
+                          }}
+                          scrollTop={scrollTop}
+                          width={width}
+                          overscanRowCount={1}
+                        />
+                      )}
+                    </WindowScroller>
+                  )}
+                </InfiniteLoader>
+              );
+            }}
+          </AutoSizer>
+        </section>
+      )
+    );
   }
 }
+
+Grid.defaultProps = {
+  aspectRatio: 1,
+  gutterSize: 20,
+};
 
 export default Grid;

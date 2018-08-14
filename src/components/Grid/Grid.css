@@ -1,20 +1,7 @@
-:root {
-  --gutter-width: 20px;
-  --gutter-compensation: calc((var(--gutter-width) * 0.5) * -1);
-  --half-gutter-width: calc((var(--gutter-width) * 0.5));
-}
-
 .grid {
-  box-sizing: border-box;
   display: flex;
-  /* margin-left: var(--gutter-compensation);
-  margin-right: var(--gutter-compensation); */
 }
 
 .grid > div {
-  box-sizing: border-box;
-  flex: 1;
-  padding-right: var(--half-gutter-width);
-  padding-left: var(--half-gutter-width);
-  margin-bottom: var(--gutter-width);
+  flex: 0 0 auto;
 }

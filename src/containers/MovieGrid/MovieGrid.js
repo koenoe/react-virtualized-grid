@@ -64,19 +64,16 @@ class MovieGrid extends PureComponent<Props, State> {
     const hasNextPage = currentPage < totalNumberOfPages;
     return (
       <Grid
+        aspectRatio={1.5}
         hasNextPage={hasNextPage}
         isLoading={isLoading}
         loadMore={this.loadMore}
         totalNumberOfItems={totalNumberOfItems}
         numberOfItems={movieIds.length}
       >
-        {({ isCellLoaded, index, measure, style }) => (
-          <div key={index} style={style}>
-            {isCellLoaded ? (
-              <MovieCell onLoad={measure} id={movieIds[index]} />
-            ) : (
-              <div>Loading &hellip;</div>
-            )}
+        {({ isCellLoaded, index, style, isScrolling }) => (
+          <div key={movieIds[index] || index} style={style}>
+            {isCellLoaded && <MovieCell placeholder={isScrolling} id={movieIds[index]} />}
           </div>
         )}
       </Grid>
